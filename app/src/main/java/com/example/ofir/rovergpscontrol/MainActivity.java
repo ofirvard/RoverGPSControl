@@ -18,8 +18,8 @@ import java.net.Socket;
 
 public class MainActivity extends AppCompatActivity implements BearingToNorthProvider.ChangeEventListener
 {
-    static final int REQUEST_CAMERA_PERMISSION = 200;
-    static final String END_TRANSMISSION = "END";
+    final int REQUEST_CAMERA_PERMISSION = 200;
+    final String END_TRANSMISSION = "END";
     TextView info;
     SocketClient socketClient;
     GPSTracker gpsTracker;
@@ -32,57 +32,56 @@ public class MainActivity extends AppCompatActivity implements BearingToNorthPro
         @Override
         public void run()
         {
-            if (!socketClient.ready)
-                handler.postDelayed(rerouteing, 1000);//1 seconds
-            else
+//            if (!socketClient.ready)
+//                handler.postDelayed(rerouteing, 1000);//1 seconds
+//            else
+//            {
+            Location locationA = new Location("destination");
+
+            locationA.setLatitude(lat);
+            locationA.setLongitude(lon);
+
+            Location locationB = new Location("current");
+            double latB = gpsTracker.getLocation().getLatitude(), lonB = gpsTracker.getLocation().getLongitude();
+
+            locationB.setLatitude(latB);
+            locationB.setLongitude(lonB);
+
+            float distance = locationA.distanceTo(locationB);
+            float bearing = locationB.bearingTo(locationA);
+            float turn = (float) bearingToNorth - bearing;
+
+            String text = "Current Info:\n" +
+                    "Destination\n" +
+                    "Latitude  : " + lat + "\n" +
+                    "Longitude : " + lon + "\n" +
+                    "\nCurrent\n" +
+                    "Latitude  : " + latB + "\n" +
+                    "Longitude : " + lonB + "\n\n" +
+                    "Distance  : " + distance + "\n" +
+                    "Bearing   : " + bearing + "\n" +
+                    "Bearing N : " + bearingToNorth + "\n" +
+                    "Turn      : " + turn;
+            info.setText(text);
+
+            try
             {
-                Location locationA = new Location("destination");
-
-                locationA.setLatitude(lat);
-                locationA.setLongitude(lon);
-
-                Location locationB = new Location("current");
-                double latB = gpsTracker.getLatitude(), lonB = gpsTracker.getLongitude();
-
-                locationB.setLatitude(latB);
-                locationB.setLongitude(lonB);
-                
-                float distance = locationA.distanceTo(locationB);
-                float bearing = locationB.bearingTo(locationA);
-                float turn = (float) bearingToNorth - bearing;
-
-                String text = "Current Info:\n" +
-                        "Destination\n" +
-                        "Latitude  : " + lat + "\n" +
-                        "Longitude : " + lon + "\n" +
-                        "\nCurrent\n" +
-                        "Latitude  : " + latB + "\n" +
-                        "Longitude : " + lonB + "\n\n" +
-                        "Distance  : " + distance + "\n" +
-                        "Bearing   : " + bearing + "\n" +
-                        "Bearing N : " + bearingToNorth + "\n" +
-                        "Turn      : " + turn;
-                info.setText(text);
-
-                try
-                {
-                    if (distance > 1)
-                    {
-                        DataOutputStream DOS = new DataOutputStream(socketClient.socket.getOutputStream());
-                        DOS.writeUTF(Float.toString(turn));
-                        handler.postDelayed(rerouteing, 5000);//5 seconds
-                    }
-                    else
-                    {
-                        DataOutputStream DOS = new DataOutputStream(socketClient.socket.getOutputStream());
-                        DOS.writeUTF(END_TRANSMISSION);
-                    }
-                }
-                catch (Exception e)
-                {
-                    e.printStackTrace();
-                }
+//                    if (distance > 1)
+//                    {
+//                        DataOutputStream DOS = new DataOutputStream(socketClient.socket.getOutputStream());
+//                        DOS.writeUTF(Float.toString(turn));
+                handler.postDelayed(rerouteing, 500);//0.5 seconds
+//                    }
+//                    else
+//                    {
+//                        DataOutputStream DOS = new DataOutputStream(socketClient.socket.getOutputStream());
+//                        DOS.writeUTF(END_TRANSMISSION);
+//                    }
+            } catch (Exception e)
+            {
+                e.printStackTrace();
             }
+//            }
         }
     };
 
@@ -119,8 +118,8 @@ public class MainActivity extends AppCompatActivity implements BearingToNorthPro
 
     public void setHere(View view)
     {
-        lat = gpsTracker.getLatitude();
-        lon = gpsTracker.getLongitude();
+        lat = gpsTracker.getLocation().getLatitude();
+        lon = gpsTracker.getLocation().getLongitude();
 
         String text = "Current Info:\n" +
                 "Destination\n" +
@@ -131,8 +130,8 @@ public class MainActivity extends AppCompatActivity implements BearingToNorthPro
 
     public void start(View view)
     {
-        socketClient = new SocketClient(((TextView) findViewById(R.id.ip)).getText().toString(),((TextView) findViewById(R.id.port)).getText().toString());
-        socketClient.start();
+//        socketClient = new SocketClient(((TextView) findViewById(R.id.ip)).getText().toString(),((TextView) findViewById(R.id.port)).getText().toString());
+//        socketClient.start();
         handler.post(rerouteing);
     }
 
@@ -156,8 +155,7 @@ public class MainActivity extends AppCompatActivity implements BearingToNorthPro
         try
         {
             socketClient.socket.close();
-        }
-        catch (Exception e)
+        } catch (Exception e)
         {
             e.printStackTrace();
         }

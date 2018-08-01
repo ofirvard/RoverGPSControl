@@ -29,41 +29,52 @@ public class GPSTracker extends Service implements LocationListener
     double latitude;
     double longitude;
 
-    private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 10;
-    private static final long MIN_TIME_BW_UPDATES = 1000 * 60 * 1;
+    //    private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 10;
+    //    private static final long MIN_TIME_BW_UPDATES = 1000 * 60 * 1;
+    private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 1;
+    private static final long MIN_TIME_BW_UPDATES = 500;
 
     protected LocationManager locationManager;
 
-    public GPSTracker(Context context) {
+    public GPSTracker(Context context)
+    {
         this.context = context;
         getLocation();
     }
 
-    public Location getLocation() {
-        try {
+    public Location getLocation()
+    {
+        try
+        {
             locationManager = (LocationManager) context.getSystemService(LOCATION_SERVICE);
 
             isGPSEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
 
             isNetworkEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
 
-            if(!isGPSEnabled && !isNetworkEnabled) {
+            if (!isGPSEnabled && !isNetworkEnabled)
+            {
 
-            } else {
+            }
+            else
+            {
                 this.canGetLocation = true;
 
-                if (isNetworkEnabled) {
+                if (isNetworkEnabled)
+                {
 
                     locationManager.requestLocationUpdates(
                             LocationManager.NETWORK_PROVIDER,
                             MIN_TIME_BW_UPDATES,
                             MIN_DISTANCE_CHANGE_FOR_UPDATES, this);
 
-                    if (locationManager != null) {
+                    if (locationManager != null)
+                    {
                         location = locationManager
                                 .getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
 
-                        if (location != null) {
+                        if (location != null)
+                        {
 
                             latitude = location.getLatitude();
                             longitude = location.getLongitude();
@@ -72,16 +83,20 @@ public class GPSTracker extends Service implements LocationListener
 
                 }
 
-                if(isGPSEnabled) {
-                    if(location == null) {
+                if (isGPSEnabled)
+                {
+                    if (location == null)
+                    {
                         locationManager.requestLocationUpdates(
                                 LocationManager.GPS_PROVIDER,
                                 MIN_TIME_BW_UPDATES,
                                 MIN_DISTANCE_CHANGE_FOR_UPDATES, this);
-                        if(locationManager != null) {
+                        if (locationManager != null)
+                        {
                             location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
 
-                            if(location != null) {
+                            if (location != null)
+                            {
                                 latitude = location.getLatitude();
                                 longitude = location.getLongitude();
                             }
@@ -90,7 +105,8 @@ public class GPSTracker extends Service implements LocationListener
                 }
             }
 
-        } catch (Exception e) {
+        } catch (Exception e)
+        {
             e.printStackTrace();
         }
 
@@ -98,51 +114,63 @@ public class GPSTracker extends Service implements LocationListener
     }
 
 
-    public void stopUsingGPS() {
-        if(locationManager != null) {
+    public void stopUsingGPS()
+    {
+        if (locationManager != null)
+        {
             locationManager.removeUpdates(GPSTracker.this);
         }
     }
 
-    public double getLatitude() {
-        if(location != null) {
+    public double getLatitude()
+    {
+        if (location != null)
+        {
             latitude = location.getLatitude();
         }
         return latitude;
     }
 
-    public double getLongitude() {
-        if(location != null) {
+    public double getLongitude()
+    {
+        if (location != null)
+        {
             longitude = location.getLongitude();
         }
 
         return longitude;
     }
 
-    public boolean canGetLocation() {
+    public boolean canGetLocation()
+    {
         return this.canGetLocation;
     }
 
-    public void showSettingsAlert() {
+    public void showSettingsAlert()
+    {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(context);
 
         alertDialog.setTitle("GPS is settings");
 
         alertDialog.setMessage("Turn on your GPS to find nearby helpers");
 
-        alertDialog.setPositiveButton("Settings", new DialogInterface.OnClickListener() {
+        alertDialog.setPositiveButton("Settings", new DialogInterface.OnClickListener()
+        {
 
             @Override
-            public void onClick(DialogInterface dialog, int which) {
+            public void onClick(DialogInterface dialog, int which)
+            {
                 Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
                 context.startActivity(intent);
             }
         });
 
-        alertDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+        alertDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener()
+        {
 
             @Override
-            public void onClick(DialogInterface dialog, int which) {
+            public void onClick(DialogInterface dialog, int which)
+            {
                 dialog.cancel();
             }
         });
@@ -151,31 +179,36 @@ public class GPSTracker extends Service implements LocationListener
     }
 
     @Override
-    public void onLocationChanged(Location arg0) {
+    public void onLocationChanged(Location arg0)
+    {
         // TODO Auto-generated method stub
 
     }
 
     @Override
-    public void onProviderDisabled(String arg0) {
+    public void onProviderDisabled(String arg0)
+    {
         // TODO Auto-generated method stub
 
     }
 
     @Override
-    public void onProviderEnabled(String arg0) {
+    public void onProviderEnabled(String arg0)
+    {
         // TODO Auto-generated method stub
 
     }
 
     @Override
-    public void onStatusChanged(String arg0, int arg1, Bundle arg2) {
+    public void onStatusChanged(String arg0, int arg1, Bundle arg2)
+    {
         // TODO Auto-generated method stub
 
     }
 
     @Override
-    public IBinder onBind(Intent intent) {
+    public IBinder onBind(Intent intent)
+    {
         // TODO Auto-generated method stub
         return null;
     }
