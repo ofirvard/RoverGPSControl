@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity implements BearingToNorthPro
 
                 locationB.setLatitude(latB);
                 locationB.setLongitude(lonB);
-
+                
                 float distance = locationA.distanceTo(locationB);
                 float bearing = locationB.bearingTo(locationA);
                 float turn = (float) bearingToNorth - bearing;
