@@ -12,10 +12,12 @@ public class SocketClient extends Thread
     Socket socket;
     boolean ready = false;
     private String ip;
+    private int port;
 
-    SocketClient(String ip)
+    SocketClient(String ip, String port)
     {
         this.ip = ip;
+        this.port = Integer.parseInt(port);
     }
 
     @Override
@@ -24,7 +26,7 @@ public class SocketClient extends Thread
         try
         {
             InetAddress inet = InetAddress.getByName(ip);
-            socket = new Socket(inet, 9152);
+            socket = new Socket(inet, port);
             ready = true;
         }
         catch (Exception e)

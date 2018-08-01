@@ -131,7 +131,7 @@ public class MainActivity extends AppCompatActivity implements BearingToNorthPro
 
     public void start(View view)
     {
-        socketClient = new SocketClient(((TextView) findViewById(R.id.ip)).getText().toString());
+        socketClient = new SocketClient(((TextView) findViewById(R.id.ip)).getText().toString(),((TextView) findViewById(R.id.port)).getText().toString());
         socketClient.start();
         handler.post(rerouteing);
     }
